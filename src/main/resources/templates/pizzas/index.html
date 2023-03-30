@@ -1,32 +1,34 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-
+  <th:block th:replace="/fragments/resources :: head"></th:block>
+  <title>Pizzas</title>
 </head>
+
 <body>
-<table th:if="${list.size() > 0}">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Price</th>
-
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="pizza : ${list}" th:object="${pizza}">
-    <td th:text="*{name}"></td>
-    <td th:text="*{description}"></td>
-    <td th:text="*{price}"></td>
-  </tr>
-  </tbody>
-</table>
-<h1 th:if="${list.size() == 0}">Non ci sono pizze</h1>
-
+<th:block th:replace="/fragments/navbar :: navbar('books', ${keyword}, true)"></th:block>
+<div class="container">
+  <table class="table" th:if="${list.size() > 0}">
+    <h1 class="text-center">Le Pizze</h1>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pizza : ${list}" th:object="${pizza}">
+      <td th:text="*{name}"></td>
+      <td th:text="*{description}"></td>
+      <td th:text="*{price}"></td>
+      <td>
+        <a th:href="@{|/books/*{id}|}" class="btn btn-primary btn-sm" title="detail"><i class="fa-solid fa-pizza-slice"></i></a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <h1 th:if="${list.size() == 0}">Non ci sono pizze</h1>
+</div>
 </body>
 </html>

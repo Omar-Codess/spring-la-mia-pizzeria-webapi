@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "pizzas")
@@ -15,8 +16,10 @@ public class Pizza {
 
     @Column(nullable = false)
     @NotEmpty
+    @Size(min = 1, max = 50, message = "Hai superato il limite massimo di caratteri")
     private String name;
     @NotEmpty
+    @Size(min = 1, max = 200, message = "Hai superato il limite massimo di caratteri")
     private String description;
     @NotNull
     @Positive

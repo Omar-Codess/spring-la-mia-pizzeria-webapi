@@ -1,6 +1,9 @@
 package org.learning.springlamiapizzeriacrud.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "pizzas")
@@ -11,8 +14,12 @@ public class Pizza {
     private Integer id;
 
     @Column(nullable = false)
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String description;
+    @NotNull
+    @Positive
     private float price;
 
     public Integer getId() {

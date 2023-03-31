@@ -42,8 +42,8 @@ public class PizzaController {
     public String show(@PathVariable("pizzaId") Integer id, Model model) {
         try {
             Pizza pizza = pizzaService.getById(id);
-            model.addAttribute("book", pizza);
-            return "/books/show";
+            model.addAttribute("pizza", pizza);
+            return "/pizzas/show";
         } catch (PizzaNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza con id " + id + " non trovata");
         }

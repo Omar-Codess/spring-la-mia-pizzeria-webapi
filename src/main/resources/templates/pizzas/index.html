@@ -8,6 +8,15 @@
 <body>
 <th:block th:replace="/fragments/navbar :: navbar('pizzas', ${keyword}, true)"></th:block>
 <div class="container">
+  <h1>Pizza <a th:href="@{/pizzas/create}" class="btn btn-primary rounded-circle" title="add pizza"><i
+          class="fa-solid fa-plus"></i></a></h1>
+  <th:block th:if="${message}">
+    <div class="alert alert-dismissible fade show"
+         th:classAppend="${#strings.equals(message.type, 'SUCCESS')} ? alert-success : alert-danger">
+      <div th:text="${message.text}"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </th:block>
   <table class="table" th:if="${list.size() > 0}">
     <h1 class="text-center">Le Pizze</h1>
     <thead>
@@ -24,6 +33,10 @@
       <td th:text="*{price}"></td>
       <td>
         <a th:href="@{|/pizzas/*{id}|}" class="btn btn-primary btn-sm" title="detail"><i class="fa-solid fa-pizza-slice"></i></a>
+        <a th:href="@{|/pizzas/edit/*{id}|}" class="btn btn-primary btn-sm" title="edit"><i
+                class="fa-solid fa-pen-to-square"></i></a>
+        <a th:href="@{|/pizzas/delete/*{id}|}" class="btn btn-primary btn-sm" title="edit"><i
+                class="fa-solid fa-trash-can"></i></a>
       </td>
     </tr>
     </tbody>

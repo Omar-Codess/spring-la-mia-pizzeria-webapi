@@ -24,6 +24,14 @@ public class PizzaService {
         return pizzaRepository.save(pizzaToPersist);
     }
 
+    public Pizza updatePizza(Pizza formPizza, Integer id) throws PizzaNotFoundException {
+        Pizza pizzaToUpdate = getById(id);
+        pizzaToUpdate.setName(formPizza.getName());
+        pizzaToUpdate.setDescription(formPizza.getDescription());
+        pizzaToUpdate.setPrice(formPizza.getPrice());
+        return pizzaRepository.save(pizzaToUpdate);
+    }
+
     public List<Pizza> getAllPizzas() {
         return pizzaRepository.findAll(Sort.by("name"));
     }

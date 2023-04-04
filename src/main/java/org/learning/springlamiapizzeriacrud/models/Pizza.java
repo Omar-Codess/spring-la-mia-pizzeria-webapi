@@ -25,6 +25,18 @@ public class Pizza {
     @Positive
     private float price;
 
+    public Pizza(String name, String description, float price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
+    public Pizza(){
+        super();
+    }
+
+
+
     public Integer getId() {
         return id;
     }

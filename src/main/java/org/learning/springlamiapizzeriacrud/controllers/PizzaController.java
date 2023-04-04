@@ -2,6 +2,7 @@ package org.learning.springlamiapizzeriacrud.controllers;
 
 import jakarta.validation.Valid;
 import org.learning.springlamiapizzeriacrud.exceptions.PizzaNotFoundException;
+import org.learning.springlamiapizzeriacrud.models.AlertMessage;
 import org.learning.springlamiapizzeriacrud.models.Pizza;
 import org.learning.springlamiapizzeriacrud.repositories.PizzaRepository;
 import org.learning.springlamiapizzeriacrud.service.PizzaService;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -92,5 +94,24 @@ public class PizzaController {
         } catch (PizzaNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "pizza with id " + id + " not found");
         }
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            boolean success = pizzaService.deleteById(id);
+            if (success) {
+                redirectAttributes.addFlashAttribute("message",
+                        new AlertMessage(AlertMessage.AlertMessageType.SUCCESS, "Pizza con id " + id + " eliminata"));
+            } else {
+                redirectAttributes.addFlashAttribute("message",
+                        new AlertMessage(AlertMessage.AlertMessageType.ERROR, "Impossibile eliminare la pizza con l'id " + id));
+            }
+
+        } catch (PizzaNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message",
+                    new AlertMessage(AlertMessage.AlertMessageType.ERROR, "Pizza con id " + id + " non trovata"));
+        }
+        return "redirect:/pizzas";
     }
 }

@@ -57,7 +57,7 @@ public class Sale {
         return pizza;
     }
 
-    public void setPizza(Pizza pizza) {
+    public void setPizza() {
         this.pizza = pizza;
     }
 }

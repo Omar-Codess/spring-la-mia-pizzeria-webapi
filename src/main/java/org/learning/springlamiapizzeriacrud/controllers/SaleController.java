@@ -2,6 +2,7 @@ package org.learning.springlamiapizzeriacrud.controllers;
 
 import jakarta.validation.Valid;
 import org.learning.springlamiapizzeriacrud.exceptions.PizzaNotFoundException;
+import org.learning.springlamiapizzeriacrud.models.AlertMessage;
 import org.learning.springlamiapizzeriacrud.models.Pizza;
 import org.learning.springlamiapizzeriacrud.models.Sale;
 import org.learning.springlamiapizzeriacrud.service.PizzaService;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -35,30 +37,42 @@ public class SaleController {
         sale.setExpireDate(LocalDate.now().plusMonths(1));
 
         if(id.isPresent()) {
-
             try {
                 Pizza pizza = pizzaService.getById(id.get());
                 sale.setPizza(pizza);
             } catch (PizzaNotFoundException e) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-
         }
 
         model.addAttribute("sale", sale);
-        return "/sales/create";
+        return "/sales/form";
 
     }
 
     @PostMapping("/create")
-    public String doCreate(@Valid @ModelAttribute Sale formSale, BindingResult bindingResult) {
+    public String doCreate(@Valid @ModelAttribute Sale formSale, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        if(bindingResult.hasErrors()) return "/sales/create";
+        if(bindingResult.hasErrors()){
+            return "/sales/form";
+        }
 
         Sale createdSale = saleService.create(formSale);
+        redirectAttributes.addFlashAttribute("message",
+                new AlertMessage(AlertMessage.AlertMessageType.SUCCESS, "Offerta creata con successo"));
         return "redirect:/pizzas/" + Integer.toString(createdSale.getPizza().getId());
-
     }
 
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        try {
+            Sale sale = saleService.getById(id);
+            model.addAttribute("sale", sale);
+            return "/sales/form";
+        } catch (PizzaNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+    }
 }
 

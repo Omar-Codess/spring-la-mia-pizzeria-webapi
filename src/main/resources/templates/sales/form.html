@@ -6,7 +6,7 @@
 </head>
 <body>
 <th:block th:replace="/fragments/navbar :: navbar('pizzas', '', false)"></th:block>
-<div class="container" th:with="pizza=${sale.pizza}">
+<div class="container" th:with="pizza=${sale.pizza}, edit=${sale.id != null}">
   <h1>
     <span>Crea un'offerta</span>
     <span th:if="${pizza != null}" th:text="|for ${pizza.name}|"></span>
@@ -15,7 +15,7 @@
           id="sale-form"
           method="post"
           class="row gy-3"
-          th:action="@{/sales/create}"
+          th:action="@{${edit ? '/sales/edit/' + sale.id : '/sales/create'}}"
           th:object="${sale}"
   >
     <!-- hidden input pizza -->
@@ -54,8 +54,8 @@
       </div>
     </div>
     <div class="col-12">
-      <button type="submit" class="btn btn-primary">Save</button>
-      <a class="btn btn-primary" th:href="@{|/pizzas/${sale.pizza.id}|}">Cancel</a>
+      <button type="submit" class="btn btn-primary">Salva</button>
+      <a class="btn btn-primary" th:href="@{|/pizzas/${sale.pizza.id}|}">Cancella</a>
     </div>
   </form>
 </div>

@@ -13,13 +13,13 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String title;
     private LocalDate startDate;
     private LocalDate expireDate;
-    private String title;
 
     @ManyToOne
     @NotNull
-    Pizza pizza;
+    private Pizza pizza;
 
     public Integer getId() {
         return id;
@@ -57,7 +57,7 @@ public class Sale {
         return pizza;
     }
 
-    public void setPizza() {
+    public void setPizza(Pizza pizza) {
         this.pizza = pizza;
     }
 }

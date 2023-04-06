@@ -28,31 +28,37 @@ public class SaleController {
     private PizzaService pizzaService;
 
     @GetMapping("/create")
-    public String create(@RequestParam(name = "pizzaId") Optional<Integer> id, Model model){
+    public String create(@RequestParam(name = "pizzaId")Optional<Integer> id, Model model){
+
         Sale sale = new Sale();
         sale.setStartDate(LocalDate.now());
         sale.setExpireDate(LocalDate.now().plusMonths(1));
-        if (id.isPresent()) {
+
+        if(id.isPresent()) {
+
             try {
-                Pizza book = pizzaService.getById(id.get());
-                sale.setPizza();
+                Pizza pizza = pizzaService.getById(id.get());
+                sale.setPizza(pizza);
             } catch (PizzaNotFoundException e) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
+
         }
+
         model.addAttribute("sale", sale);
         return "/sales/create";
+
     }
 
     @PostMapping("/create")
-    public String doCreate(@Valid @ModelAttribute Sale formSale,
-                           BindingResult bindingResult) {
-        // Validazione
-        if (bindingResult.hasErrors()) {
-            return "/sales/create";
-        }
+    public String doCreate(@Valid @ModelAttribute Sale formSale, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) return "/sales/create";
+
         Sale createdSale = saleService.create(formSale);
         return "redirect:/pizzas/" + Integer.toString(createdSale.getPizza().getId());
+
     }
+
 }
 

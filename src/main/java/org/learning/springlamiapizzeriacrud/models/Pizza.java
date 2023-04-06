@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 @Entity
 @Table(name = "pizzas")
 
@@ -24,6 +26,17 @@ public class Pizza {
     @NotNull
     @Positive
     private float price;
+
+    public List<Sale> getSales() {
+        return sales;
+    }
+
+    public void setSales(List<Sale> sales) {
+        this.sales = sales;
+    }
+
+    @OneToMany(mappedBy = "pizza")
+    private List<Sale> sales;
 
     public Pizza(String name, String description, float price) {
         this.name = name;

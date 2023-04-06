@@ -5,6 +5,7 @@ import org.learning.springlamiapizzeriacrud.exceptions.PizzaNotFoundException;
 import org.learning.springlamiapizzeriacrud.models.AlertMessage;
 import org.learning.springlamiapizzeriacrud.models.Pizza;
 import org.learning.springlamiapizzeriacrud.repositories.PizzaRepository;
+import org.learning.springlamiapizzeriacrud.service.CategoryService;
 import org.learning.springlamiapizzeriacrud.service.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,9 @@ public class PizzaController {
 
     @Autowired
     private PizzaService pizzaService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping
     public String index(Model model, @RequestParam(name = "q") Optional<String> keyword) {
@@ -54,16 +58,19 @@ public class PizzaController {
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("pizza", new Pizza());
-        return "/pizzas/create";
+        model.addAttribute("categoryList", categoryService.getAll());
+        //return "/pizzas/create";
+        return "/pizzas/edit";
     }
 
     @PostMapping("/create")
     public String doCreate(@Valid @ModelAttribute("pizza") Pizza formPizza,
                            BindingResult bindingResult, Model model) {
         // VALIDATION
-        if (bindingResult.hasErrors()) {
-            // ritorno alla view con il form
-            return "/pizzas/create";
+        boolean hasErrors = bindingResult.hasErrors();
+        if (hasErrors) {
+            model.addAttribute("categoryList", categoryService.getAll());
+            return "/pizzas/edit";
         }
         pizzaService.createPizza(formPizza);
         return "redirect:/pizzas";
@@ -74,6 +81,7 @@ public class PizzaController {
         try {
             Pizza pizza = pizzaService.getById(id);
             model.addAttribute("pizza", pizza);
+            model.addAttribute("categoryList", categoryService.getAll());
             return "/pizzas/edit";
         } catch (PizzaNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "pizza con id " + id + " non trovata");
@@ -82,9 +90,9 @@ public class PizzaController {
 
     @PostMapping("/edit/{id}")
     public String doEdit(@PathVariable Integer id, @Valid @ModelAttribute("pizza") Pizza formPizza,
-                         BindingResult bindingResult) {
+                         BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            // ricreo la view pre-compilata
+            model.addAttribute("categoryList", categoryService.getAll());
             return "/pizzas/edit";
         }
         // persisto la pizza

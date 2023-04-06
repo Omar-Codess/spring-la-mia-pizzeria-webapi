@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "pizzas")
@@ -27,16 +28,16 @@ public class Pizza {
     @Positive
     private float price;
 
-    public List<Sale> getSales() {
-        return sales;
-    }
-
-    public void setSales(List<Sale> sales) {
-        this.sales = sales;
-    }
 
     @OneToMany(mappedBy = "pizza")
     private List<Sale> sales;
+
+    @ManyToMany
+    @JoinTable(
+            name = "pizza_category",
+            joinColumns = @JoinColumn(name = "pizza_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories;
 
     public Pizza(String name, String description, float price) {
         this.name = name;
@@ -47,7 +48,6 @@ public class Pizza {
     public Pizza(){
         super();
     }
-
 
 
     public Integer getId() {
@@ -80,5 +80,21 @@ public class Pizza {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    public List<Sale> getSales() {
+        return sales;
+    }
+
+    public void setSales(List<Sale> sales) {
+        this.sales = sales;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 }

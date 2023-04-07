@@ -5,6 +5,7 @@ import org.learning.springlamiapizzeriacrud.exceptions.PizzaNotFoundException;
 import org.learning.springlamiapizzeriacrud.models.AlertMessage;
 import org.learning.springlamiapizzeriacrud.models.Pizza;
 import org.learning.springlamiapizzeriacrud.repositories.PizzaRepository;
+import org.learning.springlamiapizzeriacrud.repositories.UserRepository;
 import org.learning.springlamiapizzeriacrud.service.CategoryService;
 import org.learning.springlamiapizzeriacrud.service.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class PizzaController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
     public String index(Model model, @RequestParam(name = "q") Optional<String> keyword) {

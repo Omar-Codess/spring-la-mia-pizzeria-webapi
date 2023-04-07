@@ -72,7 +72,47 @@ public class SaleController {
         } catch (PizzaNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+    }
 
+    @PostMapping("/edit/{id}")
+    public String doEdit(@PathVariable Integer id, @Valid @ModelAttribute Sale formSale,
+                         BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        // testo la validation
+        if (bindingResult.hasErrors()) {
+            return "/sales/form";
+        }
+        try {
+            // persisto le modifiche
+            Sale updatedSale = saleService.update(id, formSale);
+            redirectAttributes.addFlashAttribute("message",
+                    new AlertMessage(AlertMessage.AlertMessageType.SUCCESS, "Offerta aggiornata correttamente"));
+            return "redirect:/pizzas/" + updatedSale.getPizza().getId();
+        } catch (PizzaNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id,
+                         @RequestParam("pizzaId") Optional<Integer> pizzaIdParam,
+                         RedirectAttributes redirectAttributes) {
+        // faccio la delete
+        Integer pizzaId = pizzaIdParam.get();
+        try {
+            saleService.delete(id);
+            redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessage.AlertMessageType.SUCCESS,
+                    "Offerta eliminata correttamente"));
+        } catch (PizzaNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessage.AlertMessageType.ERROR,
+                    "Pizza con id " + e.getMessage() + " non trovata"));
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", new AlertMessage(AlertMessage.AlertMessageType.ERROR,
+                    "Impossibile eliminare questa offerta"));
+        }
+        if (pizzaId == null) {
+            return "redirect:/pizzas";
+        }
+        return "redirect:/pizzas/" + Integer.toString(pizzaId);
     }
 }
 

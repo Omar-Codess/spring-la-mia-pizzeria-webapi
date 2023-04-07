@@ -7,7 +7,11 @@
   <body>
   <th:block th:replace="/fragments/navbar :: navbar('pizzas', '', false)"></th:block>
 <div class="container" th:object="${pizza}">
+  <th:block th:if="${message}">
+    <div th:replace="~{/fragments/messages :: alert(${message.type}, ${message.text})}"></div>
+  </th:block>
   <h1 th:text="*{name}">Pizze</h1>
+  <h3 th:text="|Hi ${loggedUser.firstName} ${loggedUser.lastName}|"></h3>
   <div>
     <dl>
       <dt>Nome:</dt>
@@ -16,11 +20,14 @@
       <dd th:text="*{description}"></dd>
       <dt>Prezzo:</dt>
       <dd th:text="*{price}"></dd>
+      <dt>Ingredienti:</dt>
+      <dd><span th:each="cat : *{categories}" th:text="${cat.name}" class="me-1"></span></dd>
     </dl>
   </div>
 
   <!-- sales -->
-  <h2>
+  <th:block th:if="${pizza.sales != null && pizza.sales.size() > 0}">
+    <h2>
     <span>Offerte</span>
     <a th:href="@{/sales/create(pizzaId=${pizza.id})}"
        class="btn btn-primary rounded-circle"
@@ -28,23 +35,39 @@
     >
       <i class="fa-solid fa-plus"></i>
     </a>
-  </h2>
-  <table class="table" th:object="${pizza}">
+    </h2>
+    <table class="table">
     <thead>
     <tr>
       <th scope="col">Titolo</th>
       <th scope="col">Inizio offerta</th>
       <th scope="col">Scadenza offerta</th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="sale : ${pizza.sales}">
+    <tr th:each="sale : *{sales}" th:object="${sale}">
       <td th:text="${sale.title}"></td>
       <td th:text="${#temporals.format(sale.startDate, 'dd/MM/yyyy')}"></td>
       <td th:text="${#temporals.format(sale.expireDate, 'dd/MM/yyyy')}"></td>
+      <td>
+        <a th:href="@{|/sales/edit/*{id}|}" class="btn btn-primary btn-sm"
+           title="edit sale">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+        <a th:href="@{|/sales/delete/*{id}?pizzaId=${pizza.id}|}"
+           class="btn btn-primary btn-sm"
+           title="delete sale">
+          <i class="fa-solid fa-trash-can"></i>
+        </a>
+      </td>
     </tr>
     </tbody>
-  </table>
+    </table>
+  </th:block>
+  <th:block th:unless="${pizza.sales != null && pizza.sales.size() > 0}">
+    <div th:replace="~{/fragments/messages :: alert('INFO', 'Non ci sono offerte per ora')}"></div>
+  </th:block>
 </div>
 
 </body>

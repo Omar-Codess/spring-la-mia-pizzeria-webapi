@@ -3,6 +3,11 @@ INSERT INTO `pizzas` (`description`, `name`, `price`) VALUES ( 'Pomodoro, mozzar
 INSERT INTO `pizzas` (`description`, `name`, `price`) VALUES ( 'Pomodoro, frutti di mare', 'Pizza Frutti di mare', 7.50);
 INSERT INTO `pizzas` (`description`, `name`, `price`) VALUES ( 'Pomodoro, mozzarella, patatine fritte', 'Pizza Patatine', 5.50);
 
+INSERT INTO sales (title, start_date, expire_date, pizza_id) VALUES('offerta 1', '2023-01-01', '2023-02-01', 1);
+INSERT INTO sales (title, start_date, expire_date, pizza_id) VALUES('offerta 2','2023-03-01', '2023-04-01', 1);
+INSERT INTO sales (title, start_date, expire_date, pizza_id) VALUES('offerta 3','2023-01-01', '2023-02-01', 2);
+INSERT INTO sales (title, start_date, expire_date, pizza_id) VALUES('offerta 4','2023-01-01', '2023-02-01', 3);
+
 INSERT INTO categories (description, name) VALUES('Pomodoro', 'Pomodoro');
 INSERT INTO categories (description, name) VALUES('Mozzarella', 'Mozzarella');
 INSERT INTO categories (description, name) VALUES('Sale', 'Sale');

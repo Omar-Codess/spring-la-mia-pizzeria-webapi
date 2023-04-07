@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
   <th:block th:replace="/fragments/resources :: head"></th:block>
   <title>Pizzas</title>
@@ -8,8 +8,14 @@
 <body>
 <th:block th:replace="/fragments/navbar :: navbar('pizzas', ${keyword}, true)"></th:block>
 <div class="container">
-  <h1>Pizza <a th:href="@{/pizzas/create}" class="btn btn-primary rounded-circle" title="add pizza"><i
-          class="fa-solid fa-plus"></i></a></h1>
+
+  <h1>Pizze <a th:href="@{/pizzas/create}"
+               class="btn btn-primary rounded-circle"
+               title="add pizza"
+               sec:authorize="hasAuthority('ADMIN')"><i
+          class="fa-solid fa-plus"></i></a>
+  </h1>
+
   <th:block th:if="${message}">
     <div th:replace="~{/fragments/messages :: alert(${message.type}, ${message.text})}"></div>
   </th:block>
@@ -29,16 +35,25 @@
       <td th:text="*{price}"></td>
       <td>
         <a th:href="@{|/pizzas/*{id}|}" class="btn btn-primary btn-sm" title="detail"><i class="fa-solid fa-pizza-slice"></i></a>
-        <a th:href="@{|/pizzas/edit/*{id}|}" class="btn btn-primary btn-sm" title="edit"><i
+        <a th:href="@{|/pizzas/edit/*{id}|}" sec:authorize="hasAuthority('ADMIN')"
+           class="btn btn-primary btn-sm" title="edit"><i
                 class="fa-solid fa-pen-to-square"></i></a>
-        <a th:href="@{|/pizzas/delete/*{id}|}" class="btn btn-primary btn-sm" title="edit"><i
-                class="fa-solid fa-trash-can"></i></a>
+        <a
+                th:if="${pizza.sales == null || pizza.sales.size() == 0}"
+                th:href="@{|/pizzas/delete/*{id}|}"
+                sec:authorize="hasAuthority('ADMIN')"
+                class="btn btn-primary btn-sm"
+                title="edit"><i
+                class="fa-solid fa-trash-can"></i>
+        </a>
       </td>
     </tr>
     </tbody>
   </table>
   <a th:href="@{/pizzas/create}" class="btn btn-primary" title="add pizza">Crea la tua pizza</a>
-  <h1 th:if="${list.size() == 0}">Non ci sono pizze</h1>
+  <th:block th:unless="${list.size() > 0}">
+    <div th:replace="~{/fragments/messages :: alert('INFO', 'The list is empty')}"></div>
+  </th:block>
 </div>
 </body>
 </html>

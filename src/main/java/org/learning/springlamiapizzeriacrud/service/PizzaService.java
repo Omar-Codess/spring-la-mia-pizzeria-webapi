@@ -1,14 +1,18 @@
 package org.learning.springlamiapizzeriacrud.service;
 
 import org.learning.springlamiapizzeriacrud.exceptions.PizzaNotFoundException;
+import org.learning.springlamiapizzeriacrud.models.Category;
 import org.learning.springlamiapizzeriacrud.models.Pizza;
+import org.learning.springlamiapizzeriacrud.repositories.CategoryRepository;
 import org.learning.springlamiapizzeriacrud.repositories.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PizzaService {
@@ -16,12 +20,18 @@ public class PizzaService {
     @Autowired
     PizzaRepository pizzaRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
     public Pizza createPizza(Pizza formPizza) {
         Pizza pizzaToPersist = new Pizza();
         pizzaToPersist.setName(formPizza.getName());
         pizzaToPersist.setDescription(formPizza.getDescription());
         pizzaToPersist.setPrice(formPizza.getPrice());
         pizzaToPersist.setCategories(formPizza.getCategories());
+
+        Set<Category> formCategories = getPizzaCategories(formPizza);
+        pizzaToPersist.setCategories(formCategories);
         return pizzaRepository.save(pizzaToPersist);
     }
 
@@ -31,6 +41,9 @@ public class PizzaService {
         pizzaToUpdate.setDescription(formPizza.getDescription());
         pizzaToUpdate.setPrice(formPizza.getPrice());
         pizzaToUpdate.setCategories(formPizza.getCategories());
+
+        Set<Category> formCategories = getPizzaCategories(formPizza);
+        pizzaToUpdate.setCategories(formCategories);
         return pizzaRepository.save(pizzaToUpdate);
     }
 
@@ -61,4 +74,11 @@ public class PizzaService {
         }
     }
 
+    private Set<Category> getPizzaCategories(Pizza formPizza) {
+        Set<Category> formCategories = new HashSet<>();
+        for (Category c : formPizza.getCategories()) {
+            formCategories.add(categoryRepository.findById(c.getId()).orElseThrow());
+        }
+        return formCategories;
+    }
 }

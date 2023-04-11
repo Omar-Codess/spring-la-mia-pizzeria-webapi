@@ -1,5 +1,6 @@
 package org.learning.springlamiapizzeriacrud.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +29,7 @@ public class Pizza {
     @Positive
     private float price;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "pizza")
     private List<Sale> sales;
 
